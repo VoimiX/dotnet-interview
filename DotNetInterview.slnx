@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AspNetCore.Pipeline/AspNetCore.Pipeline.csproj" />
+    <Project Path="src/Async.Console/Async.Console.csproj" />
+    <Project Path="src/Async.Web/Async.Web.csproj" />
+    <Project Path="src/CSharp.Delegates/CSharp.Delegates.csproj" />
+    <Project Path="src/Threading.Synchronization/Threading.Synchronization.csproj" />
+  </Folder>
+</Solution>

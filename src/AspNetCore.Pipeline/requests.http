@@ -1,0 +1,107 @@
+@base = http://localhost:5200
+
+### Список примеров
+GET {{base}}/
+
+### ---------- Middleware ----------
+
+### Порядок middleware: запрос внутрь, ответ наружу
+GET {{base}}/middleware/order
+
+### UseWhen: ветка возвращается в основной конвейер
+GET {{base}}/branch/usewhen
+
+### MapWhen: ветка не возвращается
+GET {{base}}/mapwhen/anything
+
+### Short-circuit: без ключа — 401
+GET {{base}}/secure/data
+
+###
+GET {{base}}/secure/data
+X-Api-Key: demo-key
+
+### Convention-middleware vs IMiddleware (вызовите дважды)
+GET {{base}}/middleware/lifetimes
+
+### Заголовок после начала ответа: ошибка
+GET {{base}}/middleware/response-started
+
+### Заголовок через Response.OnStarting
+GET {{base}}/middleware/response-started?mode=right
+
+### Повторное чтение тела запроса (EnableBuffering)
+POST {{base}}/middleware/echo
+Content-Type: text/plain
+
+hello body
+
+### Без EnableBuffering эндпоинт получает пустое тело
+POST {{base}}/middleware/echo?buffering=false
+Content-Type: text/plain
+
+hello body
+
+### Исключение → UseExceptionHandler + IExceptionHandler
+GET {{base}}/middleware/throw
+
+### Rate limiter: третий запрос за 10 с — 429
+GET {{base}}/middleware/rate-limited
+
+### ---------- MVC-фильтры ----------
+
+### Порядок типов фильтров и scope
+GET {{base}}/filters/order
+
+### IOrderedFilter.Order
+GET {{base}}/filters/order-override
+
+### Resource filter: кэш (вызовите дважды)
+GET {{base}}/filters/cached/1
+
+### [ApiController]: автоматический 400, action-фильтры не выполняются
+POST {{base}}/filters/validate
+Content-Type: application/json
+
+{ "product": "", "quantity": 0 }
+
+###
+POST {{base}}/filters/validate
+Content-Type: application/json
+
+{ "product": "book", "quantity": 2 }
+
+### Exception filter обрабатывает исключение action
+GET {{base}}/filters/throw-in-action
+
+### Exception filter НЕ ловит исключение result-фильтра → GlobalExceptionHandler
+GET {{base}}/filters/throw-in-result
+
+### Action filter задаёт Result — action не вызывается
+GET {{base}}/filters/short-circuit-action
+
+### Authorization filter: 403, работает только IAlwaysRunResultFilter
+GET {{base}}/filters/forbidden
+
+### ServiceFilter и TypeFilter
+GET {{base}}/filters/di
+
+### ---------- Endpoint-фильтры minimal API ----------
+
+### Порядок: группа → A → B
+GET {{base}}/minimal/order
+
+### Валидирующий фильтр: 400
+POST {{base}}/minimal/orders
+Content-Type: application/json
+
+{ "product": "", "quantity": 0 }
+
+###
+POST {{base}}/minimal/orders
+Content-Type: application/json
+
+{ "product": "pen", "quantity": 3 }
+
+### Фильтр изменяет результат
+GET {{base}}/minimal/wrap

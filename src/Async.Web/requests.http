@@ -1,0 +1,61 @@
+@base = http://localhost:5145
+
+### Список примеров
+GET {{base}}/
+
+### SynchronizationContext в ASP.NET Core
+GET {{base}}/context
+
+### Thread pool starvation: сначала async, потом sync (или перезапуск между прогонами)
+GET {{base}}/starvation/load?mode=async&n=200
+
+###
+GET {{base}}/starvation/load?mode=sync&n=200
+
+###
+GET {{base}}/starvation/stats
+
+### Отмена при отключении клиента: прервите запрос, затем смотрите /log
+GET {{base}}/cancellation/slow?seconds=10
+
+### Последовательно vs параллельно
+GET {{base}}/parallel/sequential
+
+###
+GET {{base}}/parallel/aggregate
+
+### Таймаут: 504 и отмена оставшихся вызовов
+GET {{base}}/parallel/aggregate?timeoutMs=600
+
+### Потоковый JSON из IAsyncEnumerable
+GET {{base}}/stream/json?count=5
+
+### Server-Sent Events (.NET 10)
+GET {{base}}/stream/sse?count=5
+
+### Fire-and-forget: неправильно (смотрите /log через секунду)
+POST {{base}}/fire-and-forget/wrong
+
+### Fire-and-forget: правильно — очередь + BackgroundService
+POST {{base}}/fire-and-forget/right
+
+### Параллельные операции на одном DbContext
+GET {{base}}/fire-and-forget/parallel-dbcontext
+
+### Cache stampede
+GET {{base}}/cache/stampede?n=50
+
+### Синхронный I/O запрещён в Kestrel
+POST {{base}}/sync-io/wrong
+Content-Type: text/plain
+
+hello
+
+###
+POST {{base}}/sync-io/right
+Content-Type: text/plain
+
+hello
+
+### Журнал фоновых событий
+GET {{base}}/log
